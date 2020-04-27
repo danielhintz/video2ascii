@@ -1,0 +1,8 @@
+#!/bin/sh
+
+[ -z $1 ] && echo "usage: ./extractframes <videofile>" && exit 1
+
+video="${1%.*}"
+mkdir "${video}frames"
+
+ffmpeg -i "$1" -r 1 "${video}frames/%05d.png"
