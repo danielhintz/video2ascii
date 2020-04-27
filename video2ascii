@@ -8,16 +8,15 @@
 
 video="${1%.*}"
 
-headImage=$(find "${video}frames" -type f | sort | head -1)
-images=$(find "${video}frames" -type f | sort)
-
-imgHeight=$(image2ascii -f $headImage -r "$scale" | wc -l)
-numImages=$(echo $images | tr ' ' '\n' | wc -l)
-
 tmp=$video.txt
 >$tmp
-(echo $images | tr ' ' '\n'| xargs -I {} -n1 image2ascii -f {} -r "$scale") >>$tmp
 
-awk "{for(i=0;i<$numImages;i++){for(j=0;j<$imgHeight;j++) {print \$0;getline;}system(\"sleep $sleeptime\")}}" $tmp
+for file in ${video}frames/*png;
+do
+	image2ascii -f $file -r $scale >> $tmp
+	echo "" >> $tmp
+done
 
-echo "$tmp"
+awk "{print \$0;if(length(\$0) == 0){system(\"sleep $sleeptime\")} if(getline==0) exit(0);}" $tmp
+
+echo $tmp
