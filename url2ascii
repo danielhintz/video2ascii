@@ -1,0 +1,8 @@
+#!/bin/sh
+
+[ -z "$2" ] && scale="0.25" || scale=$2
+[ -z "$3" ] && sleeptime="0.25"||sleeptime=$3
+
+name=files/${RANDOM}video.mp4
+youtube-dl $1 -o $name >/dev/null
+./video2ascii $name $scale $sleeptime

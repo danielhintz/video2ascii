@@ -14,7 +14,8 @@ images=$(find "${video}frames" -type f | sort)
 imgHeight=$(image2ascii -f $headImage -r "$scale" | wc -l)
 numImages=$(echo $images | tr ' ' '\n' | wc -l)
 
-tmp=$(mktemp)
+tmp=$video.txt
+>$tmp
 (echo $images | tr ' ' '\n'| xargs -I {} -n1 image2ascii -f {} -r "$scale") >>$tmp
 
 awk "{for(i=0;i<$numImages;i++){for(j=0;j<$imgHeight;j++) {print \$0;getline;}system(\"sleep $sleeptime\")}}" $tmp
