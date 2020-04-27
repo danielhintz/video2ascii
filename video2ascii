@@ -4,7 +4,7 @@
 [ -z "$2" ] && scale="0.25" || scale=$2
 [ -z "$3" ] && sleeptime="0.25"||sleeptime=$3
 
-extractframes $1 >/dev/null 2>&1
+./extractframes $1 >/dev/null 2>&1
 
 video="${1%.*}"
 
