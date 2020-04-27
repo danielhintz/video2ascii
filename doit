@@ -1,0 +1,24 @@
+#!/bin/sh
+
+[ -z "$1" ] && echo "Need to specify the video file" && exit
+[ -z "$2" ] && scale="0.25" || scale=$2
+[ -z "$3" ] && sleeptime="0.25"||sleeptime=$3
+
+echo "Extracting frames"
+#extractframes $1 >/dev/null 2>&1
+
+video="${1%.*}"
+
+headImage=$(find "${video}frames" -type f | sort | head -1)
+images=$(find "${video}frames" -type f | sort)
+
+imgHeight=$(image2ascii -f $headImage -r "$scale" | wc -l)
+numImages=$(echo $images | tr ' ' '\n' | wc -l)
+
+tmp=$(mktemp)
+echo "Appending images to $tmp"
+(echo $images | tr ' ' '\n'| xargs -I {} -n1 image2ascii -f {} -r "$scale") >>$tmp
+
+awk "{for(i=0;i<$numImages;i++){for(j=0;j<$imgHeight;j++) {print \$0;getline;}system(\"sleep $sleeptime\")}}" $tmp
+
+echo "Done, all ascii in $tmp"
